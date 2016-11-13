@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
 import saveDataDb from './saveDataInDb';
+import bodyParser from 'body-parser';
 import Pet from './models/Pet';
 import User from './models/User';
 
@@ -11,6 +12,8 @@ mongoose.connect('mongodb://publicdb.mgbeta.ru/pindyuk_skb3');
 
 const app = express();
 app.use(cors());
+//app.use(express.bodyParser());
+app.use(bodyParser.json());
 
 app.get('/users', async (req, res) => {
   const users = await User.find();
@@ -23,7 +26,15 @@ app.get('/pets', async (req, res) => {
 });
 
 app.post('/data', async (req, res) => {
-  const pets = req.body;
+  const data = req.body;
+  if (!data.user) return res.status(400).send('user requires');
+  if (!data.pets) data.pets = [];
+  try {
+    const result = await saveDataDb(data);
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
   /*const data = {
     user: {
       name: 'pindyuk',
@@ -39,7 +50,7 @@ app.post('/data', async (req, res) => {
       },
     ]
   };*/
-  saveDataDb(data);
+ // saveDataDb(data);
 });
 
 /*const kitty = new Pet({
