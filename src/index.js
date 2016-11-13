@@ -15,9 +15,8 @@ const app = express();
 app.use(cors());
 //app.use(express.bodyParser());
 app.use(bodyParser.json());
-app.use(isAdmin);
 
-app.get('/clear', async (req, res) => {
+app.get('/clear', isAdmin, async (req, res) => {
   await User.remove({});
   await Pet.remove({});
   return res.send('OK');
