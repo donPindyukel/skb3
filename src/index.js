@@ -15,6 +15,12 @@ app.use(cors());
 //app.use(express.bodyParser());
 app.use(bodyParser.json());
 
+app.get('/clear', async (req, res) => {
+  await User.remove({});
+  await Pet.remove({});
+  return res.send('OK');
+});
+
 app.get('/users', async (req, res) => {
   const users = await User.find();
   return res.json(users);
@@ -29,6 +35,11 @@ app.post('/data', async (req, res) => {
   const data = req.body;
   if (!data.user) return res.status(400).send('user requires');
   if (!data.pets) data.pets = [];
+
+  const user = await User.findOne({
+    name: data.user.name,
+  });
+  if (user) return res.status(400).send('user.name is exists');
   try {
     const result = await saveDataDb(data);
     return res.json(result);
