@@ -15,7 +15,7 @@ const PetSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    requred: true
+    required: true
   },
 }, { timestamps: true,
 
