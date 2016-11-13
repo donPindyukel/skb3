@@ -18,7 +18,7 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/pets', async (req, res) => {
-  const pets = await Pet.find();
+  const pets = await Pet.find().populate('owner');
   return res.json(pets);
 });
 
