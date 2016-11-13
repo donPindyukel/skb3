@@ -6,6 +6,7 @@ import saveDataDb from './saveDataInDb';
 import bodyParser from 'body-parser';
 import Pet from './models/Pet';
 import User from './models/User';
+import isAdmin from './middlewares/isAdmin';
 
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://publicdb.mgbeta.ru/pindyuk_skb3');
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 //app.use(express.bodyParser());
 app.use(bodyParser.json());
+app.use(isAdmin);
 
 app.get('/clear', async (req, res) => {
   await User.remove({});
@@ -46,40 +48,8 @@ app.post('/data', async (req, res) => {
   } catch (err) {
     return res.status(500).json(err);
   }
-  /*const data = {
-    user: {
-      name: 'pindyuk',
-    },
-    pets: [
-      {
-        name: 'Zildjian',
-        type: 'cat',
-      },
-      {
-        name: 'Doge',
-        type: 'dog'
-      },
-    ]
-  };*/
- // saveDataDb(data);
 });
 
-/*const kitty = new Pet({
-  name: 'Ziljian',
-  type: 'cat'
-});
-
-kitty.save()
-  .then(() => {
-    console.log('success');
-  })
-  .catch((err) => {
-    console.log('err', err);
-  });*/
-
-
-//const app = express();
-//app.use(cors());
 app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
 });
